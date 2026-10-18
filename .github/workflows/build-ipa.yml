@@ -1,0 +1,33 @@
+name: Build unsigned IPA
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build without code signing
+        run: |
+          xcodebuild \
+            -project HelloWorld.xcodeproj \
+            -target HelloWorld \
+            -configuration Release \
+            -sdk iphoneos \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package into an IPA
+        run: |
+          mkdir -p Payload
+          cp -R build/Release-iphoneos/HelloWorld.app Payload/
+          rm -rf Payload/HelloWorld.app/_CodeSignature
+          zip -qry HelloWorld.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HelloWorld-unsigned
+          path: HelloWorld.ipa
