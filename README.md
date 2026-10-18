@@ -4,11 +4,17 @@ Minimal SwiftUI app that shows "Hello, World!", built into an **unsigned IPA** b
 
 ## Get the IPA
 
-1. Push this repo to GitHub.
-2. Actions → **Build unsigned IPA** → wait for the run.
-3. Download the `HelloWorld-unsigned` artifact and unzip it — you get `HelloWorld.ipa`.
+Push this repo to GitHub, then either:
 
-Every push to any branch rebuilds it; you can also run it manually via *Run workflow*.
+- **Newest build, fixed URL** — Releases page → release **latest** → `HelloWorld.ipa`, or download it directly:
+
+  ```
+  curl -fL -o HelloWorld.ipa https://github.com/<owner>/<repo>/releases/latest/download/HelloWorld.ipa
+  ```
+
+- **A specific build** — every push also creates its own release tagged with the full commit SHA (titled with the short SHA). Those never change once published.
+
+The `latest` release is rebuilt from scratch on each push and re-flagged as GitHub's latest release; the commit releases stay as history. You can also trigger a build manually via Actions → *Build unsigned IPA* → *Run workflow*.
 
 The build runs:
 

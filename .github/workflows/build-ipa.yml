@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-15
@@ -27,7 +30,21 @@ jobs:
           rm -rf Payload/HelloWorld.app/_CodeSignature
           zip -qry HelloWorld.ipa Payload
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: HelloWorld-unsigned
-          path: HelloWorld.ipa
+      # Deleted first so re-running the workflow for the same commit doesn't fail.
+      - name: Publish commit release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete "$GITHUB_SHA" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "$GITHUB_SHA" HelloWorld.ipa \
+            --title "${GITHUB_SHA::7}" --notes "Built from $GITHUB_SHA" \
+            --target "$GITHUB_SHA" --latest=false
+
+      - name: Publish latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest HelloWorld.ipa \
+            --title latest --notes "Latest build from $GITHUB_SHA" \
+            --target "$GITHUB_SHA" --latest
