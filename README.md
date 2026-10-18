@@ -12,7 +12,7 @@ Push this repo to GitHub, then either:
   curl -fL -o HelloWorld.ipa https://github.com/<owner>/<repo>/releases/latest/download/HelloWorld.ipa
   ```
 
-- **A specific build** — every push also creates its own release tagged with the full commit SHA (titled with the short SHA). Those never change once published.
+- **A specific build** — every push also creates its own release tagged `sha-<full commit sha>`, titled with the short SHA. Those never change once published.
 
 The `latest` release is rebuilt from scratch on each push and re-flagged as GitHub's latest release; the commit releases stay as history. You can also trigger a build manually via Actions → *Build unsigned IPA* → *Run workflow*.
 
